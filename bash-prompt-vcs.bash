@@ -224,7 +224,7 @@ bpvcs_bash_prompt() {
     }
 
     # Get vcs state, checking them all in order, first one wins.
-    _git_state || _hg_state || _svn_state || true
+    _svn_state || _git_state || _hg_state || true
 
     # Functions are always global, so unset these so they don't leak.
     unset _reset_state
