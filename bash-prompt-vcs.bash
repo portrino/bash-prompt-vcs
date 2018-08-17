@@ -107,6 +107,18 @@ bpvcs_bash_prompt() {
             else
                 ((staged++))
             fi
+
+            # if the branch is on "HEAD (no branch)" lets check if we are on a tag
+            if [ "$branch" = "HEAD (no branch)" ]
+            then
+                tag=$( git describe --exact-match --tags )
+
+                if [ -n "$tag" ]
+                then
+                    branch=$tag
+                fi
+            fi
+
             #NOTE: -z would complicate parsing dramatically because of renames
             #      and it's not worth it since git escapes pretty well.
             # Set locale so things like ahead/behind are in English and match the above.
