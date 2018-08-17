@@ -111,7 +111,7 @@ bpvcs_bash_prompt() {
             # if the branch is on "HEAD (no branch)" lets check if we are on a tag
             if [ "$branch" = "HEAD (no branch)" ]
             then
-                tag=$( git describe --exact-match --tags )
+                tag=$(LC_ALL=C git describe --exact-match --tags 2>/dev/null)
 
                 if [ -n "$tag" ]
                 then
