@@ -203,9 +203,8 @@ bpvcs_bash_prompt() {
                     branch="${value}"
             fi
         # svn info returns 0 even if not a sandbox so parse error messages
-        done < <(svn info 2>&1)
+        done < <(LC_ALL=C svn info 2>&1)
 
-        local line
         while IFS= read -r line ; do
             line="${line/warning: /}"   # normalize error output - remove "warning: " if existing
             # Not a svn sandbox.
@@ -219,17 +218,22 @@ bpvcs_bash_prompt() {
                 return 0
             fi
 
+            # ignore svn changelist output
+            if [[ "${line:0:14}" = "--- Changelist" ]]; then
+                continue
+            fi            
+
             case "${line:0:1}" in
                 A|M|R|D) ((changed++)) ;;
                 \?|!)    ((untracked++)) ;;
                 " ")   if [[ "${line:1:1}" = "M" ]]; then ((changed++)); fi ;;
                 # The following are all valid but ignored.
                 # Parse them to be able to detect bad output in the *) case.
-                C|I|X|~) ;;
+                ""|C|I|X|~) ;;
                 *) error="unexpected svn status output"; return 0 ;;
             esac
         # svn status returns 0 even if not a sandbox so parse error messages
-        done < <(svn status --ignore-externals 2>&1)
+        done < <(LC_ALL=C svn status --ignore-externals 2>&1)
 
         vcs="svn"
         return 0
