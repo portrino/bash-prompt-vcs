@@ -182,6 +182,10 @@ bpvcs_bash_prompt() {
         local line
         while IFS= read -r line ; do
             line="${line/warning: /}"   # normalize error output - remove "warning: " if existing
+            # No svn client installed
+            if [[ "${line##*: }" = "command not found" ]]; then
+                return 1
+            fi
             # Not a svn sandbox.
             if [[ "${line:0:13}" = "svn: E155007:" ]] || [[ "${line:0:13}" = "svn: W155007:" ]]; then
                 return 1
