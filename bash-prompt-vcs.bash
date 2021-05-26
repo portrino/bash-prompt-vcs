@@ -225,7 +225,7 @@ bpvcs_bash_prompt() {
             # ignore svn changelist output
             if [[ "${line:0:14}" = "--- Changelist" ]]; then
                 continue
-            fi            
+            fi
 
             case "${line:0:1}" in
                 A|M|R|D) ((changed++)) ;;
@@ -244,7 +244,7 @@ bpvcs_bash_prompt() {
     }
 
     # Get vcs state, checking them all in order, first one wins.
-    _svn_state || _git_state || _hg_state || true
+    _git_state || _hg_state || _svn_state || true
 
     # Functions are always global, so unset these so they don't leak.
     unset _reset_state
